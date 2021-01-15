@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-07 09:36:13
- * @LastEditTime: 2021-01-14 14:58:54
+ * @LastEditTime: 2021-01-15 11:31:20
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \Algorithm\main.cpp
@@ -44,11 +44,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 
+#include "z_define.h"
 #include "z_file.h"
 #include "z_log.h"
 #include "z_lock.h"
 #include "z_runcmd.h"
 #include "z_message.h"
+#include "z_thread.h"
 
 /**
  * @description: 
@@ -61,6 +63,9 @@
 
 static ZMutex mMainMutex;
 static ZMsgQue_ID demo_id = 0;
+static bool mWorkProcRthreadRun = false;
+static HANDLE mWorkProcRthread = 0;
+
 static void _test1(int*){
     ZAutoMutex _l(mMainMutex);
     Z_INFO("int*");
@@ -70,10 +75,11 @@ static void _test2(int&){
 }
 
 
-static int _msg_demo_receive(ZMsgQue_ID &demo_id){
+static void* _msg_demo_receive(void *param){
     ZMsg msg = {0};
-    while(1){
-        if(0 == ZMsgQue_Receive(demo_id,&msg,1000)){
+    ZMsgQue_ID *demo_id = (ZMsgQue_ID*)param;
+    while(mWorkProcRthreadRun){
+        if(0 == ZMsgQue_Receive(*demo_id,&msg,1000)){
             switch (msg.what)
             {
             case 1:
@@ -86,6 +92,7 @@ static int _msg_demo_receive(ZMsgQue_ID &demo_id){
         }
         sleep(10);
     }
+    Z_DEBUG("_msg_demo_receive thread is Stop!\n");
 }
 
 int main(int argc, char **argv){
@@ -135,7 +142,11 @@ int main(int argc, char **argv){
     msg.what = 1;
     ZMsgQue_Send(demo_id, &msg, 1000);
     usleep(1000*1000);
-    _msg_demo_receive(demo_id);
+    mWorkProcRthreadRun = true;   
+    if(NULL == mWorkProcRthread){
+        mWorkProcRthread = ZThrd_Create("Message_demo",NULL,_msg_demo_receive,&demo_id);
+    }
+    getchar();
     //###################Msg Demo######
 
 }
