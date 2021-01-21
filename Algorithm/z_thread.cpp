@@ -12,6 +12,7 @@
 #include "z_lock.h"
 #include "z_thread.h"
 #include "z_log.h"
+#include "z_signal.h"
 
 
 #define TAG ("THREAD")
@@ -96,7 +97,7 @@ static void _delThread(ZThread *thrd) {
     }
     mCount--;
 
-    z_free(thrd);
+    free(thrd);
 }
 
 static void _addThread(ZThread *thrd) {
@@ -150,7 +151,7 @@ static bool _attachThread(ZThread *thrd, const char *name, ZThrd_Attr *attr, con
     thrd->wparam = wparam;
 
     if(name) {
-        strlcpy(thrd->name, name, sizeof(thrd->name));
+        strcpy(thrd->name, name);
         pthread_setname_np(thrd->id, name);
     }
 

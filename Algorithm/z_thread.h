@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-14 15:23:43
- * @LastEditTime: 2021-01-15 11:07:16
+ * @LastEditTime: 2021-01-21 10:04:52
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \Algorithm\z_thread.h
@@ -9,7 +9,7 @@
 #ifndef Z_THREAD_H
 #define Z_THREAD_H
 //是否启用线程池 //暂时没有适配
-#define USE_THRD_POOL (0) 
+#define USE_THRD_POOL (1) 
 
 /* 线程调度策略 */
 enum ZThrd_Sched{
