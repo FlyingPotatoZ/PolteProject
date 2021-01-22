@@ -1,12 +1,4 @@
 /*
- * @Author: your name
- * @Date: 2021-01-07 09:36:13
- * @LastEditTime: 2021-01-15 11:31:20
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit
- * @FilePath: \Algorithm\main.cpp
- */
-/*
  * 
  * 　　┏┓　　　┏┓+ +
  * 　┏┛┻━━━┛┻┓ + +
@@ -96,6 +88,12 @@ static void* _msg_demo_receive(void *param){
     Z_DEBUG("_msg_demo_receive thread is Stop!\n");
 }
 
+/**
+ * @description: 用于测试ztool库中的各个模块功能
+ * @param {int} argc
+ * @param {char} *
+ * @return {*}
+ */
 int main(int argc, char **argv){
     z_file();
     int A[50];
@@ -145,7 +143,7 @@ int main(int argc, char **argv){
     usleep(1000*1000);
     mWorkProcRthreadRun = true;   
     if(NULL == mWorkProcRthread){
-        mWorkProcRthread = ZThrd_Create("Message_demo",NULL,_msg_demo_receive,&demo_id);
+        mWorkProcRthread = ZThrd_Create("Message_demo",NULL,_msg_demo_receive,&demo_id);//测试在多线性情况下的消息队列机制
     }
     getchar();
     //###################Msg Demo######
