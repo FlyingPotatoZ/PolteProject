@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-14 10:19:47
- * @LastEditTime: 2021-01-21 09:29:35
+ * @LastEditTime: 2021-01-25 10:26:36
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \Algorithm\z_common.cpp
@@ -12,6 +12,7 @@
 #include "z_define.h"
 #include "z_common.h"
 
+#define TAG ("COMMON")
 
 void ZCommom_AddTimeSpecMS(struct timespec *time, unsigned int add_ms /* ms */) {
     Z_VERIFY_RET_VOID(NULL == time);

@@ -59,6 +59,7 @@ static ZMsgQue_ID demo_id = 0;
 static bool mWorkProcRthreadRun = false;
 static HANDLE mWorkProcRthread = 0;
 
+
 static void _test1(int*){
     ZAutoMutex _l(mMainMutex);
     Z_INFO("int*");
