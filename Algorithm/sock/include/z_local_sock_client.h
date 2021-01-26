@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-22 10:48:10
- * @LastEditTime: 2021-01-25 18:12:25
+ * @LastEditTime: 2021-01-26 11:21:12
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \PolteProject\Algorithm\sock\z_local_sock_client.h
@@ -28,13 +28,14 @@ extern "C"{
 #define HAVE_LINUX_LOCAL_SOCKET_NAMESPACE "linux_local_socket_namespace"
 
 #define SOCK_FNAME "/tmp/localsock"
+#define MAX_SOCK_BUFFSIZE 256
 
 /**
  * @description:本地 sock客户端
  * @param {*}
  * @return {*}
  */
-int z_local_sock_send_client(char *cmd);
+int zSock_localSockSendClient(const char *cmd);
 
 
 #ifdef __cplusplus
