@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-22 10:47:05
- * @LastEditTime: 2021-01-26 11:23:57
+ * @LastEditTime: 2021-01-27 10:38:54
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \PolteProject\Algorithm\sock\z_local_sock_client.cpp
@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#include "z_local_sock_define.h"
 #include "z_local_sock_client.h"
 
 /**

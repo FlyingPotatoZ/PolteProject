@@ -25,10 +25,7 @@ typedef enum{
 extern "C"{
 #endif
 
-#define HAVE_LINUX_LOCAL_SOCKET_NAMESPACE "linux_local_socket_namespace"
 
-#define SOCK_FNAME "/tmp/localsock"
-#define MAX_SOCK_BUFFSIZE 256
 
 /**
  * @description:本地 sock客户端
