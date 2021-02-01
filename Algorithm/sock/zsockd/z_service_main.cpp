@@ -34,6 +34,7 @@ int main(int argc, char **argv){
 
     _initSockServer();
 
+    int tmp = 0;
 
     while (1)
     {
