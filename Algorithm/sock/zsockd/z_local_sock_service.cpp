@@ -10,3 +10,14 @@
 
 #include "z_local_sock_define.h"
 #include "z_local_sock_service.h"
+
+
+
+static int _clientReceiver(){
+
+}
+
+//工作线程
+int LooperThread(){
+    return _clientReceiver();
+}

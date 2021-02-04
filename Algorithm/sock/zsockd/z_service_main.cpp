@@ -25,6 +25,11 @@ static int _initSockServer(){
     return 0;
 }
 
+//工作线程
+static int _LooperThread(){
+    
+}
+
 int main(int argc, char **argv){
     zLog_setLogLevel(Z_LOG_ALL);
     
@@ -35,6 +40,7 @@ int main(int argc, char **argv){
     _initSockServer();
 
     int tmp = 0;
+    
 
     while (1)
     {
