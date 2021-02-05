@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-22 10:47:05
- * @LastEditTime: 2021-01-27 10:38:54
+ * @LastEditTime: 2021-02-05 17:42:55
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \PolteProject\Algorithm\sock\z_local_sock_client.cpp
@@ -17,7 +17,9 @@
 #include <stdlib.h>
 
 #include "z_local_sock_define.h"
+#include "z_local_sock_common.h"
 #include "z_local_sock_client.h"
+
 
 /**
  * @description:构建本地sock addr结构体 
@@ -56,70 +58,6 @@ static int _makeSockaddr_un(const char *name, struct sockaddr_un *p_addr, sockle
     return NO_ERROR;
 }
 
-/**
- * @description:从socket文件中读数据 
- * @param {*}
- * @return {*}
- */
-static int _socketReadData(int fd, void *buffer, int length){
-    
-    if(fd < 0){
-        printf("fd is error\n");
-        return -1;
-    }
-    
-    int bytes_left = 0;
-    int bytes_read = 0;
-    char *ptr = (char *)buffer;
-
-    while(1){
-        bytes_read = read(fd, ptr, length);
-        if(-1 == bytes_read && errno != EINTR && errno != EWOULDBLOCK && errno != EAGAIN){
-            break;
-        }
-
-        if(bytes_read > 0){
-            bytes_left += bytes_read;
-            ptr += bytes_read;
-            break;
-        }
-    }
-
-    return bytes_left;
-}
-
-/**
- * @description:给socket文件中写数据 
- * @param {*}
- * @return {*}
- */
-static int _socketWriteData(int fd, const void *buffer, int length){
-    
-    if(fd < 0){
-        printf("fd is error\n");
-        return -1;
-    }
-    
-    int bytes_left = 0;
-    int bytes_write = 0;
-    char *ptr;
-    ptr = (char *)buffer;
-    bytes_left = length;
-
-    while(bytes_left > 0){
-        bytes_write = write(fd, ptr, bytes_left);
-        if(bytes_write <= 0){
-            if(errno == EINTR){
-                bytes_write = 0;
-            }else{
-                return WRITE_ERR;
-            }
-        }
-        bytes_left -= bytes_write;
-        ptr += bytes_write;
-    }
-    return NO_ERROR;
-}
 
 /**
  * @description:连接socket 
@@ -167,14 +105,14 @@ int zSock_localSockSendClient(const char *cmd){
             break;
         }
 
-        ret = _socketWriteData(socketID, cmd, strlen(cmd));
+        ret = zSockCommon_socketWriteData(socketID, cmd, strlen(cmd));
         if(ret < 0){
             printf("WRITE ERROR\n");
             ret = WRITE_ERR;
             break;
         }
 
-        ret = _socketReadData(socketID, buf, MAX_SOCK_BUFFSIZE);
+        ret = zSockCommon_socketReadData(socketID, buf, MAX_SOCK_BUFFSIZE);
         if(ret < 0){
             printf("READ ERROR\n");
             ret = READ_ERR;
