@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-25 17:18:21
- * @LastEditTime: 2021-02-05 18:31:06
+ * @LastEditTime: 2021-02-08 14:43:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \PolteProject\Algorithm\sock\zsockd\z_local_sock_service.cpp
@@ -16,6 +16,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 
+#include "z_define.h"
 #include "z_log.h"
 
 #include "z_local_sock_define.h"
@@ -77,6 +78,33 @@ static void _closeServerSock(int sock_id){
     close(sock_id);
 }
 
+static int _doCmd(char *buf,char *result){
+    Z_VERIFY_RET_VAL(NULL == buf, -1);
+    if(0 == strcmp(buf, "test")){
+        Z_DEBUG("yes, it's worked!!");
+    }else if(0 == strcmp(buf, "exit")){
+        Z_DEBUG("do zsockd stop!");
+        mReceiveEnable = false;
+        return 0;
+    }
+}
+
+
+
+//工作线程
+static int _WorkProc(int socket, char *buf, void *work_cb, void *param){
+    Z_DEBUG("hello _WorkProc...\n");
+
+    if(NULL != buf){
+        _doCmd(buf, NULL);
+    }
+    if(NULL != work_cb){
+        Z_DEBUG("Unrealized !!do work_cb");
+    }
+
+    return 0;
+}
+
 static int _clientReceiver(int sock_id, char* read_buff){
     if(sock_id < 0 || NULL == read_buff){
         Z_ERROR("Receiver args error!\n");
@@ -95,13 +123,13 @@ static int _clientReceiver(int sock_id, char* read_buff){
 
         memset(read_buff, 0, MAX_SOCK_BUFFSIZE);
 
-        if((len = zSockCommon_socketReadData(sock_id, read_buff, MAX_SOCK_BUFFSIZE)) < 0){
-            Z_ERROR("read data error! serverID is : %d\n", sock_id);
+        if((len = zSockCommon_socketReadData(mAccSockID, read_buff, MAX_SOCK_BUFFSIZE)) < 0){
+            Z_ERROR("read data error! serverID is : %d\n", mAccSockID);
             continue;
         }
-        
-        if(-1 == zSock_WorkProc(sock_id, NULL, NULL, NULL)){
-            Z_ERROR("zSock_WorkProc error! serverID is : %d\n", sock_id);
+        Z_DEBUG("zsockd read data is :%s", read_buff);
+        if(-1 == _WorkProc(mAccSockID, read_buff, NULL, NULL)){
+            Z_ERROR("_WorkProc error! serverID is : %d\n", mAccSockID);
             continue;
         }
         
@@ -110,15 +138,14 @@ static int _clientReceiver(int sock_id, char* read_buff){
     return 0;
 }
 
+
+
+
 void zSockd_setReceiveEnable(bool enable){
     mReceiveEnable = enable;
 }
 
-int zSock_WorkProc(int socket, char *buf, void *work_cb, void *param){
-    Z_DEBUG("hello zSock_WorkProc");
-    return 0;
-}
-//工作线程
+//sockd守护线程
 int zSockd_LooperThread(){
     int ret = -1;
     int mServerSockID = -1;

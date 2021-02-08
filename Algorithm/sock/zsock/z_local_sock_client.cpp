@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-22 10:47:05
- * @LastEditTime: 2021-02-05 17:42:55
+ * @LastEditTime: 2021-02-08 14:51:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \PolteProject\Algorithm\sock\z_local_sock_client.cpp
@@ -111,13 +111,14 @@ int zSock_localSockSendClient(const char *cmd){
             ret = WRITE_ERR;
             break;
         }
-
+#if 0
         ret = zSockCommon_socketReadData(socketID, buf, MAX_SOCK_BUFFSIZE);
         if(ret < 0){
             printf("READ ERROR\n");
             ret = READ_ERR;
             break;
         }
+#endif
     }while (0);
 
     printf("%s\n", buf);
@@ -126,9 +127,12 @@ int zSock_localSockSendClient(const char *cmd){
 }
 
 int main(int argv, char **argc){
-    const char * cmd = "hello";
+    const char * cmd = "test";
     int ret = 0;
+    if(2 == argv) cmd = argc[1];
+
     ret = zSock_localSockSendClient(cmd);
+    
     printf("####bye###\n");
     return ret;
 }
