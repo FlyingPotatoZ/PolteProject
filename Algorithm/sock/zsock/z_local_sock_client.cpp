@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-22 10:47:05
- * @LastEditTime: 2021-02-08 14:51:03
+ * @LastEditTime: 2021-02-19 14:26:30
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \PolteProject\Algorithm\sock\z_local_sock_client.cpp
@@ -99,6 +99,7 @@ int zSock_localSockSendClient(const char *cmd){
     int len;
     do{
         socketID = _socketConnectClient(SOCK_FNAME, SOCK_STREAM);
+        
         if(socketID < 0){
             printf("CONENT ERROR\n");
             ret = socketID;

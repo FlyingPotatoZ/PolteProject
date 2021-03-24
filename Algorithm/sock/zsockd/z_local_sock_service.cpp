@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-25 17:18:21
- * @LastEditTime: 2021-02-08 14:43:50
+ * @LastEditTime: 2021-02-19 15:30:49
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \PolteProject\Algorithm\sock\zsockd\z_local_sock_service.cpp
@@ -78,8 +78,11 @@ static void _closeServerSock(int sock_id){
     close(sock_id);
 }
 
+//根据客户端传来的字符串判断执行什么功能
 static int _doCmd(char *buf,char *result){
     Z_VERIFY_RET_VAL(NULL == buf, -1);
+    
+    Z_DEBUG("client cmd is :%s\n",buf);
     if(0 == strcmp(buf, "test")){
         Z_DEBUG("yes, it's worked!!");
     }else if(0 == strcmp(buf, "exit")){
