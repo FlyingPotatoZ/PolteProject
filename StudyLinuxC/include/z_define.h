@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-01-13 15:57:11
- * @LastEditTime: 2021-01-14 16:31:05
+ * @LastEditTime: 2021-03-26 15:26:25
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \Algorithm\z_define.h
@@ -17,6 +17,7 @@ typedef void *HANDLE;
 
 #define Z_TIMEOUT_INFINITY (0xffffffff)
 #define Z_TIMEOUT_IMMEDIATE (0x00)
+#define Z_MAXLINE (256)
 
 #define Z_VERIFY_RET_VOID(condition) \
     do { \
