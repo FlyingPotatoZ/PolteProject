@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-24 14:54:01
- * @LastEditTime: 2021-04-08 20:46:11
+ * @LastEditTime: 2021-04-26 11:32:48
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \StudyLinuxC\src\main.cpp
@@ -17,6 +17,7 @@
 
 #include "z_log.h"
 #include "z_define.h"
+#include "classTest.h"
 
 #define TAG ("MAIN")
 
@@ -138,9 +139,133 @@ static int _stdIN2stdOUT(){
     return 0;
 }
 
+/**
+ * @description: 改变文件状态标志
+ * @param {int} fd 文件描述符
+ * @param {int} flags
+ * @return {*}
+ */
+static void _set_fl(int fd, int flags){
+    int val;
+    if((val = fcntl(fd, F_GETFL, 0)) < 0){
+        Z_ERROR("fcntl F_GETFL %d error!", fd);
+    }
+
+    val |= flags;
+    
+    if(fcntl(fd,F_SETFL, val) < 0){
+        Z_ERROR("fcntl F_SETFL %d error!", fd);
+    }
+}
+
+/**
+ * @description:打印出文件类型 
+ * @param {const char} *path
+ * @return {*}
+ */
+static void _stat(const char *path){
+    int i;
+    struct stat buf;
+    char *ptr = {0};
+
+    if(lstat(path, &buf) < 0){
+        Z_ERROR("lstat error!\n");
+        return ;
+    }
+
+    if(S_ISREG(buf.st_mode)){
+        ptr = "regular";
+    }else if(S_ISDIR(buf.st_mode)){
+        ptr = "directory";
+    }else if(S_ISCHR(buf.st_mode)){
+        ptr = "character special";
+    }else if(S_ISBLK(buf.st_mode)){
+        ptr = "block special";
+    }else if(S_ISFIFO(buf.st_mode)){
+        ptr = "fifo";
+    }else if(S_ISLNK(buf.st_mode)){
+        ptr = "symbolic link";
+    }else if(S_ISSOCK(buf.st_mode)){
+        ptr = "socket";
+    }else{
+        ptr = "unknown mode";
+    }
+    Z_INFO("%s is %s\n", path, ptr);
+}
+
+void _cbsayhello(){
+    Z_DEBUG("hello");
+}
+
+void _cbsayhello2(){
+    Z_DEBUG(" just not say hello ha~");
+}
+typedef int (*intcb)();
+
+int dohello(intcb cb){
+    cb();
+}
+
+#define TOK_ADD 5
+char *tok_ptr;
+void do_line();
+void cmd_add();
+int get_token();
+
+void do_line(char *ptr){
+    int cmd;
+
+    tok_ptr = ptr;
+    while ((cmd == get_token()) > 0)
+    {
+        switch (cmd)
+        {
+        case TOK_ADD:
+            cmd_add();
+            break;
+        
+        default:
+            break;
+        }
+    } 
+}
+
+void cmd_add(){
+    int token;
+    token = get_token();
+    
+}
+
+int get_token(){
+    
+}
+
+
+static time_t mTime;
+
+extern char **environ; //获取环境表全局变量             
+
 int main(int argv, char** argc){
+    zLog_setLogLevel(Z_LOG_ALL);
     Z_DEBUG("hello this process ID is [%d]", getpid());
     //_fileHole("TEST.hole");
-    _stdIN2stdOUT();
+    //_stdIN2stdOUT();
+    if(argv >= 2){
+        _stat(argc[1]);
+    }
+
+    atexit(_cbsayhello2);//注册exit退出时需要执行得函数
+    if(atexit(_cbsayhello) < 0) Z_ERROR("atexit register fail");
+
+    for(int i = 0; environ[i] != NULL; ++i){
+        Z_DEBUG("%s\n",environ[i]);
+    }
+   
+
+    int iii;
+    scanf("%d",&iii);
+    Z_DEBUG("iii is %d\n",iii);
+    Z_DEBUG("enc is %s\n", getenv("LOGNAME"));//根据环境变量名返回环境变量
+
     return 0;
 }
