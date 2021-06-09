@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-24 14:54:01
- * @LastEditTime: 2021-04-26 11:32:48
+ * @LastEditTime: 2021-04-28 10:39:50
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \StudyLinuxC\src\main.cpp
@@ -261,11 +261,22 @@ int main(int argv, char** argc){
         Z_DEBUG("%s\n",environ[i]);
     }
    
-
-    int iii;
-    scanf("%d",&iii);
-    Z_DEBUG("iii is %d\n",iii);
     Z_DEBUG("enc is %s\n", getenv("LOGNAME"));//根据环境变量名返回环境变量
+
+    pid_t pid;
+    int i =0;
+    if((pid = fork()) < 0){
+        Z_ERROR("fork error!\n");
+    }else if(0 == pid){
+        i = 1;
+        Z_DEBUG("this is son!\n");
+    }else{
+        i = 2;
+        Z_DEBUG("this is father!\n");
+    }
+
+    Z_DEBUG("i is %d\n",i);
+    
 
     return 0;
 }
