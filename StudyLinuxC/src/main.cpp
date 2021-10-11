@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-24 14:54:01
- * @LastEditTime: 2021-04-28 10:39:50
+ * @LastEditTime: 2021-09-18 16:36:05
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \StudyLinuxC\src\main.cpp
@@ -14,14 +14,20 @@
 #include <string.h>
 #include <cstdlib>
 #include <fcntl.h>
+#include<iostream>
 
 #include "z_log.h"
 #include "z_define.h"
 #include "classTest.h"
 
+
 #define TAG ("MAIN")
 
 #define TE (1ULL<<32)
+
+extern int zThreadDemoMain();
+extern int zIPCDemoMain();
+extern int zIODemoMain();
 /**
  * @description:测试从标准输入读出字符，包括EOF标准 
  * @param {*}
@@ -194,11 +200,11 @@ static void _stat(const char *path){
 }
 
 void _cbsayhello(){
-    Z_DEBUG("hello");
+    Z_DEBUG("bye~");
 }
 
 void _cbsayhello2(){
-    Z_DEBUG(" just not say hello ha~");
+    Z_DEBUG(" bye~~bye~~bye~~");
 }
 typedef int (*intcb)();
 
@@ -240,6 +246,47 @@ int get_token(){
     
 }
 
+int testa(int& ma){
+    printf("A = 0x%x \n",&ma);
+    printf("*A = 0x%x \n",ma);
+}
+
+int testb(int* ma){
+    printf("A = 0x%x \n",ma);
+    printf("*A = 0x%x \n",*ma);
+}
+
+int testc(int ma){
+    printf("A = 0x%x \n",&ma);
+    printf("*A = 0x%x \n",ma);
+}
+
+static void _printSysconf(){
+    long num_procs;
+    long page_size;
+    long num_pages;
+    long free_pages;
+    long long mem;
+    long long free_mem;
+    long is_support_safe;
+    long ONE_MB = 1024*1024;
+    num_procs = sysconf (_SC_NPROCESSORS_CONF);
+    printf ("CPU 个数为: %ld 个\n", num_procs);
+    page_size = sysconf (_SC_PAGESIZE);
+    printf ("系统页面的大小为: %ld K\n", page_size / 1024 );
+    num_pages = sysconf (_SC_PHYS_PAGES);
+    printf ("系统中物理页数个数: %ld 个\n", num_pages);
+    free_pages = sysconf (_SC_AVPHYS_PAGES);
+    printf ("系统中可用的页面个数为: %ld 个\n", free_pages);
+    mem = (long long) ((long long)num_pages * (long long)page_size);
+    mem /= ONE_MB;
+    free_mem = (long long)free_pages * (long long)page_size;
+    free_mem /= ONE_MB;
+    printf ("总共有 %lld MB 的物理内存, 空闲的物理内存有: %lld MB\n", mem, free_mem);
+
+    is_support_safe = sysconf(_SC_THREAD_SAFE_FUNCTIONS);
+    printf ("支持线程安全函数: %ld 个\n", is_support_safe);
+}
 
 static time_t mTime;
 
@@ -256,7 +303,13 @@ int main(int argv, char** argc){
 
     atexit(_cbsayhello2);//注册exit退出时需要执行得函数
     if(atexit(_cbsayhello) < 0) Z_ERROR("atexit register fail");
+    //_execl();
+    //zThreadDemoMain();
+    //_printSysconf();
+    //zIPCDemoMain();
+    zIODemoMain();
 
+#if 0
     for(int i = 0; environ[i] != NULL; ++i){
         Z_DEBUG("%s\n",environ[i]);
     }
@@ -269,6 +322,7 @@ int main(int argv, char** argc){
         Z_ERROR("fork error!\n");
     }else if(0 == pid){
         i = 1;
+        sleep(10);
         Z_DEBUG("this is son!\n");
     }else{
         i = 2;
@@ -277,6 +331,9 @@ int main(int argv, char** argc){
 
     Z_DEBUG("i is %d\n",i);
     
+#endif
+    
+
 
     return 0;
 }
