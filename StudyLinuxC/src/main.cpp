@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-24 14:54:01
- * @LastEditTime: 2021-09-18 16:36:05
+ * @LastEditTime: 2021-10-20 16:02:34
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \StudyLinuxC\src\main.cpp
@@ -308,6 +308,12 @@ int main(int argv, char** argc){
     //_printSysconf();
     //zIPCDemoMain();
     zIODemoMain();
+    //fputs("putssssss",stdout);
+    int year,mouth,day,hour,min,second;
+    sscanf("2019.10.10-20:35:56","%d.%d.%d-%d:%d:%d",&year,&mouth,&day,&hour,&min,&second);  
+    std::cout<<year<<std::endl;
+    std::cout<<hour<<std::endl; 
+    std::cerr<<"sorry~some error happened"<<std::endl;  
 
 #if 0
     for(int i = 0; environ[i] != NULL; ++i){
