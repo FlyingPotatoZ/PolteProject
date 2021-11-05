@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-09-17 10:49:36
- * @LastEditTime: 2021-10-20 16:00:40
+ * @LastEditTime: 2021-11-05 15:58:39
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \StudyLinuxC\src\IOTest.cpp
@@ -14,9 +14,14 @@
 #include <string.h>
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
+#include <string>
 
 #include "z_log.h"
 #include "z_define.h"
+
+using namespace std;
 
 #define TAG ("IODEMO")
 
@@ -361,9 +366,152 @@ extern "C"
     }
 }
 
+
+/**
+ * @description: C++标准库总专门实现了一套IO类用于进行IO操作：ios、streambuf、istream、ostream、iostream
+ *              例如：cout为ostream对象，其指向的流为标准输出
+ *                 cin为istream对象，其指向的流为标准输入
+ *                 cerr为ostream对象，其指向的流为标准出错，不缓冲
+ *                 clog为ostream对象，其指向的流为标准出错，带缓冲
+ *             对于文件IO，从iostream文件中派生出了一系列类：fstream、ifstream、ofstream
+ * @param {*}
+ * @return {*}
+ */
 extern "C++"
 {
+    /*
+    注：进行C++风格的IO时要秉持面向对象的思想
+    */
     static void ios(){
+        /**
+         * @description: cout为ostream对象，指向输出流，其包含得方法也适用于其他ostream对象
+         *              cout支持格式化输出
+         * @param {*}
+         * @return {*}
+         */        
+        cout<<"hello";
+        cout.put('A'); //put方法用于显示字符串
+        cout.put('A').put('B');//put方法得返回值是ostream & 所以可以连续调用
+        const char *str="abcdefghijklmnopqrstuvwxyz";
+        cout.write(str, 5);//write方法向流中写入指定长度得字符串，例子输出 abcde
+
+        cout.width(5);//设置字符串宽度，只影响下一次输出。
+        cout.fill('*');//填充字符，经常配合width使用可以，输出类似于****24这样的效果，会一直生效。
+        cout.precision(2);//设置浮点数精度，一直生效直到被重置
+        cout.setf(ios_base::showpoint);//显示末尾小数点，该方法支持得参数还有：
+                                /*
+                                    boolalpha	可以使用单词"true"和"false"进行输入/输出的布尔值.
+                                    oct	用八进制格式显示数值.
+                                    dec	用十进制格式显示数值.
+                                    hex	用十六进制格式显示数值.
+                                    left	输出调整为左对齐.
+                                    right	输出调整为右对齐.
+                                    scientific	用科学记数法显示浮点数.
+                                    fixed	用正常的记数方法显示浮点数(与科学计数法相对应).
+                                    showbase	输出时显示所有数值的基数.
+                                    showpoint	显示小数点和额外的零，即使不需要.
+                                    showpos	在非负数值前面显示"＋（正号）".
+                                    skipws	当从一个流进行读取时，跳过空白字符(spaces, tabs, newlines).
+                                    unitbuf	在每次插入以后，清空缓冲区.
+                                    internal	将填充字符回到符号和数值之间.
+                                    uppercase	以大写的形式显示科学记数法中的"e"和十六进制格式的"x".
+                                */
+        cout.setf(ios_base::boolalpha, ios_base::basefield)//重载方法，第二个与第一个参数配合支持更多方式。主要是清除第一个参数中哪些位。
+
+
+        /**
+         * @description: cin为istream对象，指向输入流，其包含得方法也适用于其他istream对象
+         * @param {*}
+         * @return {*}
+         */ 
+        char c_ch;
+        cin >> c_ch;//从标准输入读一个char赋给ch,会忽略空格
+        int i_ch;
+        i_ch = cin.get();//get（void）方法从标准输入读一个char，将其返回给i_ch,注意i_ch是int型变量，因为需要兼容EOF
+
+        char c1, c2, c3;
+        cin.get(c1).get(c2).get(c3);//get(char &)方法将输入流读出一个char，赋c1，返回一个istream &。所以可以连续调用。
+        char buf[256];
+        cin.getline(buf, 256);//getline一次读取一行,或者不超过256-1长度得字符串，为啥是256-1，是因为会自动给buf尾部添加'\0'
+        cin.read(buf, 256);//与write相对应，读取256个字符
+
+        /*********************************************************************************************************************/
+        //对于文件得IO，简单来说就是分为三步：创建一个ifstream/ofstream对象、将流与某一个文件关联起来、使用类似与cin/cout的方法进行IO
+        //ifstream/ofstream本身就是继承与istream/ostream，所以可以使用他们的所有方法。
+        /*********************************************************************************************************************/
+
+        /**
+         * @description: 简单的文件IO用法
+         * @param {*}
+         * @return {*}
+         */        
+        ofstream ofp1;
+        ofp1.open(path);
+        ofp1 << "hello";
+        //也可以直接使用构造函数创建流
+        ofstream ofp2(path);
+        ofp2 << "hello ya~";
+
+        ifstream ifp1;
+        ifp1.open(path);
+        //ifstream ifp1(path); 同样可以使用构造函数创建流
+        if(!ifp1.is_open()){
+            cerr << "open fail";
+        }
+        ifp1 >> c_ch;
+        ifp1 >> buf;
+        ifp1.getline(buf, 256);
+        ifp1.read(buf,256);
+
+        //需要注意的是显示调用close后并不会关闭流，只是断开了流与特定文件的关联。利用这一点可以让一个流先后关联不同的文件，以节约系统资源
+        ofp1.close();
+        ofp2.close();
+        ifp1.close();
+
+    /**
+     * @description:文件打开模式，主要包括ios::in、ios::out、ios::app、ios::ate、ios:: trunc、ios::binary
+     *          ios::in		                    打开文件用于读取数据。如果文件不存在，则打开出错。
+                ios::out	                    打开文件用于写入数据。如果文件不存在，则新建该文件；如果文件原来就存在，则打开时清除原来的内容。
+                ios::app	                    打开文件，用于在其尾部添加数据。如果文件不存在，则新建该文件。
+                ios::ate	                    打开一个已有的文件，并将文件读指针指向文件末尾（读写指 的概念后面解释）。如果文件不存在，则打开出错。
+                ios:: trunc		                打开文件时会清空内部存储的所有数据，单独使用时与 ios::out 相同。
+                ios::binary		                以二进制方式打开文件。若不指定此模式，则以文本模式打开。
+                ios::in | ios::out	            打开已存在的文件，既可读取其内容，也可向其写入数据。文件刚打开时，原有内容保持不变。如果文件不存在，则打开出错。
+                ios::in | ios::out		        打开已存在的文件，可以向其写入数据。文件刚打开时，原有内容保持不变。如果文件不存在，则打开出错。
+                ios::in | ios::out | ios::trunc	打开文件，既可读取其内容，也可向其写入数据。如果文件本来就存在，则打开时清除原来的内容；如果文件不存在，则新建该文件。 
+     * @param {*}
+     * @return {*}
+     */     
+
+        ofstream ofp3;
+        ofp3.open(path, ios_base::in);
+        ofstream ofp4(path,ios::in); //ios继承于ios_base
+        ofstream ofp5(path,ios::out|ios::app); //ios继承于ios_base
+
+        ifstream ifp2(path, ios::in);
+
+        /**************************************************************************************************************/
+        //string对象的IO族sstream类，可能会奇怪为什么还专门弄一个类去做string对象的IO，主要使用ostringstream和istringstream
+        //    主要是为了生成格式化字符串，以及方便获取string字符串信息
+        /**************************************************************************************************************/
+        ostringstream outstr;
+        string name;
+        cout << "wath is your name? ";
+        getline(cin, name);
+        int years;
+        cout << "how old are you? ";
+        cin >> years;
+        outstr << "Now we know you are "<< name << "and " << years << "years old!";
+        string ret = outstr.str();//调用str()方法后，将ostringstream对象冻结，该对象不在被改变。
+        cout << ret; 
+
+
+        const string strr = "!Now we know you are zhuzhiyu and 18 years old!i am coming again~";
+        istringstream instr(strr);
+        string word;
+        while(instr >> word){
+            cout << word <<endl;
+        }
 
     }
 }

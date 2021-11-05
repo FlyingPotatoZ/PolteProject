@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-24 14:54:01
- * @LastEditTime: 2021-10-20 16:02:34
+ * @LastEditTime: 2021-11-05 14:19:59
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \StudyLinuxC\src\main.cpp
@@ -15,11 +15,13 @@
 #include <cstdlib>
 #include <fcntl.h>
 #include<iostream>
+#include <sstream>
 
 #include "z_log.h"
 #include "z_define.h"
 #include "classTest.h"
 
+using namespace std;
 
 #define TAG ("MAIN")
 
@@ -313,7 +315,27 @@ int main(int argv, char** argc){
     sscanf("2019.10.10-20:35:56","%d.%d.%d-%d:%d:%d",&year,&mouth,&day,&hour,&min,&second);  
     std::cout<<year<<std::endl;
     std::cout<<hour<<std::endl; 
-    std::cerr<<"sorry~some error happened"<<std::endl;  
+
+    ostringstream outstr;
+    string name;
+    cout << "wath is your name? ";
+    getline(cin, name);
+    int years;
+    cout << "how old are you? ";
+    cin >> years;
+
+    outstr << "Now we know you are "<< name << " and " << years << " years old!" ;
+
+    string ret = outstr.str();
+    cout<<ret; 
+
+
+    const string strr = "!Now we know you are zhuzhiyu and 18 years old! i am coming again~";
+    istringstream instr(strr);
+    string word;
+    while(instr >> word){
+        cout << word <<endl;
+    }
 
 #if 0
     for(int i = 0; environ[i] != NULL; ++i){
