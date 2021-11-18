@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-09-17 10:49:36
- * @LastEditTime: 2021-11-05 15:58:39
+ * @LastEditTime: 2021-11-08 17:38:04
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \StudyLinuxC\src\IOTest.cpp
@@ -416,7 +416,7 @@ extern "C++"
                                     internal	将填充字符回到符号和数值之间.
                                     uppercase	以大写的形式显示科学记数法中的"e"和十六进制格式的"x".
                                 */
-        cout.setf(ios_base::boolalpha, ios_base::basefield)//重载方法，第二个与第一个参数配合支持更多方式。主要是清除第一个参数中哪些位。
+        cout.setf(ios_base::boolalpha, ios_base::basefield);//重载方法，第二个与第一个参数配合支持更多方式。主要是清除第一个参数中哪些位。
 
 
         /**

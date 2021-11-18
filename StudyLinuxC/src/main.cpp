@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2021-03-24 14:54:01
- * @LastEditTime: 2021-11-05 14:19:59
+ * @LastEditTime: 2021-11-15 11:30:15
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \StudyLinuxC\src\main.cpp
@@ -30,6 +30,7 @@ using namespace std;
 extern int zThreadDemoMain();
 extern int zIPCDemoMain();
 extern int zIODemoMain();
+extern int zSTLDemoMain();
 /**
  * @description:测试从标准输入读出字符，包括EOF标准 
  * @param {*}
@@ -292,7 +293,36 @@ static void _printSysconf(){
 
 static time_t mTime;
 
-extern char **environ; //获取环境表全局变量             
+extern char **environ; //获取环境表全局变量 
+
+int itv_mc_ascutc2time(const char *ascutc)
+{
+    struct tm t;
+
+	if(NULL == ascutc || strlen(ascutc) < 15)
+	{
+		return 0;
+	}
+
+	t.tm_year = (ascutc[0] - '0') * 1000 + (ascutc[1] - '0') * 100
+	            + (ascutc[2] - '0') * 10 + (ascutc[3] - '0') - 1900;
+	t.tm_mon = (ascutc[4] - '0') * 10 + (ascutc[5] - '0') - 1 ;
+	t.tm_mday = (ascutc[6] - '0') * 10 + (ascutc[7] - '0');
+	t.tm_hour = (ascutc[9] - '0') * 10 + (ascutc[10] - '0');
+	t.tm_min = (ascutc[11] - '0') * 10 + (ascutc[12] - '0');
+	t.tm_sec = (ascutc[13] - '0') * 10 + (ascutc[14] - '0');
+
+	
+	return mktime(&t);
+	//return timegm(&t);
+}
+
+static int func1(int a,int b, int c =10){
+    cout<< "func1_1 :"<< endl;
+    return 0;
+}
+
+
 
 int main(int argv, char** argc){
     zLog_setLogLevel(Z_LOG_ALL);
@@ -309,8 +339,12 @@ int main(int argv, char** argc){
     //zThreadDemoMain();
     //_printSysconf();
     //zIPCDemoMain();
-    zIODemoMain();
-    //fputs("putssssss",stdout);
+    //zIODemoMain();
+    //zSTLDemoMain();
+
+    func1(1,2);
+    printf("func1 is :%x", &func1);
+#if 0
     int year,mouth,day,hour,min,second;
     sscanf("2019.10.10-20:35:56","%d.%d.%d-%d:%d:%d",&year,&mouth,&day,&hour,&min,&second);  
     std::cout<<year<<std::endl;
@@ -337,7 +371,7 @@ int main(int argv, char** argc){
         cout << word <<endl;
     }
 
-#if 0
+
     for(int i = 0; environ[i] != NULL; ++i){
         Z_DEBUG("%s\n",environ[i]);
     }
